@@ -1,9 +1,21 @@
 import React, { Component } from "react";
 
 class TaskDisplay extends Component {
-  displayTasks(task) {
-    return <li key={task.key}>{task.value}</li>;
+  constructor(props){
+    super(props);
+    this.displayTasks = this.displayTasks.bind(this);
+    this.deleteTask = this.deleteTask.bind(this);
   }
+
+  deleteTask(e, key){
+    e.preventDefault();
+    this.props.delete(key);
+  }
+
+  displayTasks(task) {
+    return <div key ={task.key}><li key={task.key}>{task.value}</li><button onClick = {(e) => this.deleteTask(e, task.key)}>Delete</button></div>;
+  }
+
   render() {
     var taskList = this.props.tasks.map(this.displayTasks);
     return <ul>{taskList}</ul>;
@@ -14,6 +26,7 @@ class ToDoList extends Component {
   constructor(props) {
     super(props);
     this.createTask = this.createTask.bind(this);
+    this.deleteTask = this.deleteTask.bind(this);
 
     this.state = {
       tasks: [],
@@ -48,6 +61,18 @@ class ToDoList extends Component {
     }
   }
 
+  deleteTask(key){
+    var updatedTaskList = this.state.tasks;
+    for(var i=0; i<updatedTaskList.length; i++){
+      if(updatedTaskList[i].key===key){
+        updatedTaskList.splice(i,1);
+      }
+    } 
+
+    this.setState({
+      tasks: updatedTaskList
+    });
+  }
   render() {
     return (
       <div>
@@ -58,7 +83,7 @@ class ToDoList extends Component {
           <button type="submit" onClick={this.createTask}>
             Add Task
           </button>
-          <TaskDisplay tasks={this.state.tasks} />
+          <TaskDisplay tasks={this.state.tasks} delete = {this.deleteTask}/>
         </form>
       </div>
     );
