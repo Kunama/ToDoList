@@ -19,14 +19,14 @@ class TaskDisplay extends Component {
     this.props.delete(key);
   }
 
-  displayTasks(task) {//Formats all tasks in props into returnable HTML
+  displayTasks(task, key) {//Formats all tasks in props into returnable HTML
     if(task.completed === true){
       var style={ color: '#8CC739' }
     } else{
       style={ color: '' }
     }
 
-    return <div key ={task.key}><li style = {style} key={task.key} onClick={(e) => this.toggleCompletion(e, task.key)}>{task.value}</li><button onClick = {(e) => this.deleteTask(e, task.key)}>Delete</button></div>;
+    return <div key ={key}><li style = {style} key={key} onClick={(e) => this.toggleCompletion(e, key)}>{task.value}</li><button onClick = {(e) => this.deleteTask(e, key)}>Delete</button></div>;
   }
 
   render() {
@@ -42,8 +42,7 @@ class ToDoList extends Component {
     this.deleteTask = this.deleteTask.bind(this);
     this.toggleCompletion = this.toggleCompletion.bind(this);
     this.state = {
-      tasks: [],
-      taskCounter: 0
+      tasks: []
     };
   }
 
@@ -52,45 +51,34 @@ class ToDoList extends Component {
 
     var task = { //Create new task element
       value: document.getElementById("taskInput").value,
-      key: this.state.taskCounter,
       completed: false
     };
 
     document.getElementById("taskInput").value = ""; //Clear form input
-
+    task.value = task.value.trim();
     if (task.value === "") {
       alert("Please enter a task before submitting.");
     } else {
       var updatedTasks = this.state.tasks;
       updatedTasks.push(task);
-      var updatedTaskCounter = this.state.taskCounter + 1; //Update state with new task and counter
 
       this.setState({
         tasks: updatedTasks,
-        taskCounter: updatedTaskCounter
       });
     }
   }
 
-  toggleCompletion(key){ //Toggles state completed for task corresponding to passed in key
+  toggleCompletion(i){ //Toggles state completed for task corresponding to passed in key
     var updatedTaskList = this.state.tasks;
-    for(var i=0; i<updatedTaskList.length; i++){
-      if(updatedTaskList[i].key === key){
         updatedTaskList[i].completed = !updatedTaskList[i].completed;
-      }
-    }
     this.setState({
       tasks: updatedTaskList
     });
   }
 
-  deleteTask(key){ //Deletes task from state array
+  deleteTask(i){ //Deletes task from state array
     var updatedTaskList = this.state.tasks;
-    for(var i=0; i<updatedTaskList.length; i++){
-      if(updatedTaskList[i].key===key){
         updatedTaskList.splice(i,1);
-      }
-    } 
     this.setState({
       tasks: updatedTaskList
     });
