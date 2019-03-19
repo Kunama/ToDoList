@@ -1,38 +1,42 @@
 import React, { Component } from "react";
 import "./main.css";
+
 class TaskDisplay extends Component {
-  constructor(props){
+
+  constructor(props){ //Constructor for TaskDisplay functions
     super(props);
     this.displayTasks = this.displayTasks.bind(this);
     this.deleteTask = this.deleteTask.bind(this);
   }
-  toggleCompletion(e, key){
+
+  toggleCompletion(e, key){//Helper function for toggleCompletion in ToDoList
     e.preventDefault();
     this.props.completion(key);
   }
-  deleteTask(e, key){
+
+  deleteTask(e, key){//Helper function for deleteTask in ToDoList class
     e.preventDefault();
     this.props.delete(key);
   }
 
-  displayTasks(task) {
-    
+  displayTasks(task) {//Formats all tasks in props into returnable HTML
     if(task.completed === true){
       var style={ color: '#8CC739' }
     } else{
       style={ color: '' }
     }
+
     return <div key ={task.key}><li style = {style} key={task.key} onClick={(e) => this.toggleCompletion(e, task.key)}>{task.value}</li><button onClick = {(e) => this.deleteTask(e, task.key)}>Delete</button></div>;
   }
 
   render() {
     var taskList = this.props.tasks.map(this.displayTasks);
-    return <ol>{taskList}</ol>;
+    return <ol>{taskList}</ol>; //Displays generated to do list items
   }
 }
 
 class ToDoList extends Component {
-  constructor(props) {
+  constructor(props) { //Constructor for ToDoList functions
     super(props);
     this.createTask = this.createTask.bind(this);
     this.deleteTask = this.deleteTask.bind(this);
@@ -43,11 +47,10 @@ class ToDoList extends Component {
     };
   }
 
-  //Create Task Function
-  createTask(e) {
-    e.preventDefault(); //Prevent page reload on form submit
+  createTask(e) {//Adds new task into state array
+    e.preventDefault(); 
 
-    var task = {
+    var task = { //Create new task element
       value: document.getElementById("taskInput").value,
       key: this.state.taskCounter,
       completed: false
@@ -66,12 +69,10 @@ class ToDoList extends Component {
         tasks: updatedTasks,
         taskCounter: updatedTaskCounter
       });
-
-      // console.log(this.state.tasks);
     }
   }
-  toggleCompletion(key){
-    
+
+  toggleCompletion(key){ //Toggles state completed for task corresponding to passed in key
     var updatedTaskList = this.state.tasks;
     for(var i=0; i<updatedTaskList.length; i++){
       if(updatedTaskList[i].key === key){
@@ -82,19 +83,19 @@ class ToDoList extends Component {
       tasks: updatedTaskList
     });
   }
-  deleteTask(key){
+
+  deleteTask(key){ //Deletes task from state array
     var updatedTaskList = this.state.tasks;
     for(var i=0; i<updatedTaskList.length; i++){
       if(updatedTaskList[i].key===key){
         updatedTaskList.splice(i,1);
       }
     } 
-
-    
     this.setState({
       tasks: updatedTaskList
     });
   }
+
   render() {
     return (
       <div>
